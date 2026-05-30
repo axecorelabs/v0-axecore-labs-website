@@ -20,6 +20,11 @@ export const metadata: Metadata = {
   description:
     'Axecore Labs designs, engineers, and deploys transformative software, AI solutions, automation systems, and digital infrastructure that help organizations scale, innovate, and lead.',
   generator: 'v0.app',
+  icons: {
+    icon: '/axecore-logo.png',
+    shortcut: '/axecore-logo.png',
+    apple: '/axecore-logo.png',
+  },
   keywords: [
     'AI solutions',
     'software engineering',

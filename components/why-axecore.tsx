@@ -30,8 +30,7 @@ const FEATURES = [
 export function WhyAxecore() {
   return (
     <section id="about" className="relative overflow-hidden bg-navy py-24 text-white">
-      <div className="pointer-events-none absolute inset-0 grid-pattern-dark opacity-50" />
-      <div className="pointer-events-none absolute -left-32 top-1/2 h-96 w-96 -translate-y-1/2 rounded-full bg-primary/20 blur-[120px]" />
+      <div className="pointer-events-none absolute inset-0 dotted-grid-dark opacity-60 [mask-image:radial-gradient(ellipse_at_center,black,transparent_80%)]" />
 
       <div className="relative mx-auto max-w-7xl px-5 sm:px-8">
         <SectionHeading

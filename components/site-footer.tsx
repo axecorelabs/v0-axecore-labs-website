@@ -24,7 +24,7 @@ export function SiteFooter() {
             <a href="#home" className="flex items-center gap-2.5" aria-label="Axecore Labs home">
               <Logo className="h-7 w-7" />
               <span className="text-lg font-bold tracking-tight text-foreground">
-                Axecore<span className="text-primary"> Labs</span>
+                Axecore<span className="text-accent"> Labs</span>
               </span>
             </a>
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-muted-foreground">

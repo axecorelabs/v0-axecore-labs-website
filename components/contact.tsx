@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, type FormEvent } from 'react'
+import { useActionState, useEffect, useRef, useState } from 'react'
 import { Mail, MapPin, Phone, Linkedin, Twitter, Github, Check } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -14,10 +14,11 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Reveal } from '@/components/reveal'
+import { submitContact, type ContactState } from '@/app/actions/contact'
 
 const CONTACT_INFO = [
-  { icon: Mail, label: 'hello@axecorelabs.com' },
-  { icon: Phone, label: '+234 800 000 0000' },
+  { icon: Mail, label: 'axecore.org@gmail.com', href: 'mailto:axecore.org@gmail.com' },
+  { icon: Phone, label: '+234 702 540 4838', href: 'tel:+2347025404838' },
   { icon: MapPin, label: 'Lagos, Nigeria · Remote-first' },
 ]
 
@@ -27,18 +28,23 @@ const SOCIALS = [
   { icon: Github, label: 'GitHub' },
 ]
 
-export function Contact() {
-  const [submitted, setSubmitted] = useState(false)
+const INITIAL_STATE: ContactState = { ok: false }
 
-  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    setSubmitted(true)
-  }
+export function Contact() {
+  const [state, formAction, pending] = useActionState(submitContact, INITIAL_STATE)
+  const [projectType, setProjectType] = useState('')
+  const formRef = useRef<HTMLFormElement>(null)
+
+  useEffect(() => {
+    if (state.ok) {
+      formRef.current?.reset()
+      setProjectType('')
+    }
+  }, [state.ok])
 
   return (
     <section id="contact" className="relative overflow-hidden bg-navy py-24 text-white">
-      <div className="pointer-events-none absolute inset-0 grid-pattern-dark opacity-50" />
-      <div className="pointer-events-none absolute -right-32 top-0 h-96 w-96 rounded-full bg-primary/20 blur-[120px]" />
+      <div className="pointer-events-none absolute inset-0 dotted-grid-dark opacity-60 [mask-image:radial-gradient(ellipse_at_center,black,transparent_80%)]" />
 
       <div className="relative mx-auto grid max-w-7xl gap-12 px-5 sm:px-8 lg:grid-cols-2 lg:gap-16">
         <div className="lg:pt-6">
@@ -55,12 +61,26 @@ export function Contact() {
             <ul className="mt-10 space-y-4">
               {CONTACT_INFO.map((item) => {
                 const Icon = item.icon
-                return (
-                  <li key={item.label} className="flex items-center gap-3 text-sm text-white/80">
+                const content = (
+                  <>
                     <span className="flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-accent">
                       <Icon className="h-4 w-4" />
                     </span>
                     {item.label}
+                  </>
+                )
+                return (
+                  <li key={item.label} className="flex items-center gap-3 text-sm text-white/80">
+                    {item.href ? (
+                      <a
+                        href={item.href}
+                        className="flex items-center gap-3 transition-colors hover:text-accent"
+                      >
+                        {content}
+                      </a>
+                    ) : (
+                      content
+                    )}
                   </li>
                 )
               })}
@@ -86,7 +106,7 @@ export function Contact() {
 
         <Reveal delay={0.1}>
           <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur sm:p-8">
-            {submitted ? (
+            {state.ok ? (
               <div className="flex flex-col items-center justify-center py-16 text-center">
                 <span className="flex h-14 w-14 items-center justify-center rounded-full bg-accent/15 text-accent">
                   <Check className="h-7 w-7" />
@@ -97,7 +117,8 @@ export function Contact() {
                 </p>
               </div>
             ) : (
-              <form onSubmit={onSubmit} className="grid gap-5">
+              <form ref={formRef} action={formAction} className="grid gap-5">
+                <input type="hidden" name="projectType" value={projectType} />
                 <div className="grid gap-5 sm:grid-cols-2">
                   <div className="grid gap-2">
                     <Label htmlFor="name" className="text-white/80">
@@ -105,6 +126,7 @@ export function Contact() {
                     </Label>
                     <Input
                       id="name"
+                      name="name"
                       required
                       placeholder="Jane Doe"
                       className="border-white/15 bg-white/5 text-white placeholder:text-white/40 focus-visible:ring-accent"
@@ -116,6 +138,7 @@ export function Contact() {
                     </Label>
                     <Input
                       id="company"
+                      name="company"
                       placeholder="Acme Inc."
                       className="border-white/15 bg-white/5 text-white placeholder:text-white/40 focus-visible:ring-accent"
                     />
@@ -128,6 +151,7 @@ export function Contact() {
                   </Label>
                   <Input
                     id="email"
+                    name="email"
                     type="email"
                     required
                     placeholder="jane@company.com"
@@ -139,7 +163,7 @@ export function Contact() {
                   <Label htmlFor="project-type" className="text-white/80">
                     Project Type
                   </Label>
-                  <Select>
+                  <Select value={projectType} onValueChange={setProjectType}>
                     <SelectTrigger
                       id="project-type"
                       className="border-white/15 bg-white/5 text-white focus-visible:ring-accent data-[placeholder]:text-white/40"
@@ -162,6 +186,7 @@ export function Contact() {
                   </Label>
                   <Textarea
                     id="message"
+                    name="message"
                     required
                     rows={4}
                     placeholder="Tell us about your project..."
@@ -169,12 +194,19 @@ export function Contact() {
                   />
                 </div>
 
+                {state.error ? (
+                  <p className="text-sm text-red-400" role="alert">
+                    {state.error}
+                  </p>
+                ) : null}
+
                 <Button
                   type="submit"
                   size="lg"
+                  disabled={pending}
                   className="bg-accent text-accent-foreground hover:bg-accent/90"
                 >
-                  Book a Consultation
+                  {pending ? 'Sending...' : 'Book a Consultation'}
                 </Button>
               </form>
             )}

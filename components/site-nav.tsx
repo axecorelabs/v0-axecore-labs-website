@@ -39,8 +39,13 @@ export function SiteNav() {
       <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5 sm:px-8">
         <a href="#home" className="flex items-center gap-2.5" aria-label="Axecore Labs home">
           <Logo className="h-7 w-7" />
-          <span className="text-lg font-bold tracking-tight text-foreground">
-            Axecore<span className="text-primary"> Labs</span>
+          <span
+            className={cn(
+              'text-lg font-bold tracking-tight transition-colors',
+              scrolled ? 'text-foreground' : 'text-white',
+            )}
+          >
+            Axecore<span className="text-accent"> Labs</span>
           </span>
         </a>
 
@@ -49,7 +54,12 @@ export function SiteNav() {
             <li key={link.href}>
               <a
                 href={link.href}
-                className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+                className={cn(
+                  'rounded-md px-3 py-2 text-sm font-medium transition-colors',
+                  scrolled
+                    ? 'text-muted-foreground hover:text-foreground'
+                    : 'text-white/70 hover:text-white',
+                )}
               >
                 {link.label}
               </a>

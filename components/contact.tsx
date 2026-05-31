@@ -17,7 +17,11 @@ import { Reveal } from '@/components/reveal'
 import { submitContact, type ContactState } from '@/app/actions/contact'
 
 const CONTACT_INFO = [
-  { icon: Mail, label: 'axecore.org@gmail.com', href: 'mailto:axecore.org@gmail.com' },
+  {
+    icon: Mail,
+    label: 'support@axecorelabs.bords.app',
+    href: 'mailto:support@axecorelabs.bords.app',
+  },
   { icon: Phone, label: '+234 702 540 4838', href: 'tel:+2347025404838' },
   { icon: MapPin, label: 'Lagos, Nigeria · Remote-first' },
 ]

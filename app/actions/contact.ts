@@ -4,7 +4,7 @@ import { randomUUID } from 'crypto'
 import { getDb } from '@/lib/mongodb'
 import { Resend } from 'resend'
 
-const NOTIFY_EMAIL = 'axecore.org@gmail.com'
+const NOTIFY_EMAIL = 'support@axecorelabs.bords.app'
 
 export type ContactState = {
   ok: boolean

@@ -1,8 +1,10 @@
 'use client'
 
+import { motion } from 'framer-motion'
 import { Target, Cpu, Handshake, Lightbulb } from 'lucide-react'
 import { SectionHeading } from '@/components/section-heading'
 import { Stagger, StaggerItem } from '@/components/reveal'
+import { useDottedHover } from '@/components/use-dotted-hover'
 
 const FEATURES = [
   {
@@ -28,9 +30,17 @@ const FEATURES = [
 ]
 
 export function WhyAxecore() {
+  const { onPointerMove, onPointerLeave, overlayStyle } = useDottedHover()
+
   return (
-    <section id="about" className="relative overflow-hidden bg-navy py-24 text-white">
+    <section
+      id="about"
+      className="relative overflow-hidden bg-navy py-24 text-white"
+      onPointerMove={onPointerMove}
+      onPointerLeave={onPointerLeave}
+    >
       <div className="pointer-events-none absolute inset-0 dotted-grid-dark opacity-60 [mask-image:radial-gradient(ellipse_at_center,black,transparent_80%)]" />
+      <motion.div aria-hidden="true" className="pointer-events-none absolute inset-0" style={overlayStyle} />
 
       <div className="relative mx-auto max-w-7xl px-5 sm:px-8">
         <SectionHeading

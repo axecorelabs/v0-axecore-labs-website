@@ -1,9 +1,9 @@
 'use client'
 
-import { motion, useMotionTemplate, useMotionValue, useSpring } from 'framer-motion'
-import { useState } from 'react'
+import { motion } from 'framer-motion'
 import { ArrowRight, Sparkles } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { useDottedHover } from '@/components/use-dotted-hover'
 
 const FADE = {
   initial: { opacity: 0, y: 20 },
@@ -11,27 +11,14 @@ const FADE = {
 }
 
 export function Hero() {
-  const mouseX = useMotionValue(0)
-  const mouseY = useMotionValue(0)
-  const x = useSpring(mouseX, { stiffness: 140, damping: 24, mass: 0.3 })
-  const y = useSpring(mouseY, { stiffness: 140, damping: 24, mass: 0.3 })
-  const [showTrail, setShowTrail] = useState(false)
-
-  const trailGradient = useMotionTemplate`radial-gradient(95px circle at ${x}px ${y}px, rgba(255,255,255,0.22), rgba(255,255,255,0.12) 42%, rgba(255,255,255,0.04) 62%, transparent 78%)`
-
-  const handlePointerMove = (event: React.PointerEvent<HTMLElement>) => {
-    const rect = event.currentTarget.getBoundingClientRect()
-    mouseX.set(event.clientX - rect.left)
-    mouseY.set(event.clientY - rect.top)
-    if (!showTrail) setShowTrail(true)
-  }
+  const { onPointerMove, onPointerLeave, overlayStyle } = useDottedHover()
 
   return (
     <section
       id="home"
       className="relative overflow-hidden bg-navy text-white"
-      onPointerMove={handlePointerMove}
-      onPointerLeave={() => setShowTrail(false)}
+      onPointerMove={onPointerMove}
+      onPointerLeave={onPointerLeave}
     >
       {/* subtle dotted grid, faded toward edges */}
       <div
@@ -44,11 +31,8 @@ export function Hero() {
 
       <motion.div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 transition-opacity duration-500"
-        style={{
-          backgroundImage: trailGradient,
-          opacity: showTrail ? 1 : 0,
-        }}
+        className="pointer-events-none absolute inset-0"
+        style={overlayStyle}
       />
 
       <div className="relative mx-auto flex max-w-4xl flex-col items-center px-5 pb-28 pt-36 text-center sm:px-8 lg:pb-36 lg:pt-44">
@@ -58,7 +42,7 @@ export function Hero() {
           className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3.5 py-1.5 text-xs font-medium text-white/80"
         >
           <Sparkles className="h-3.5 w-3.5 text-accent" />
-          African ambition. Global standards.
+          African resilience. Global standards.
         </motion.div>
 
         <motion.h1

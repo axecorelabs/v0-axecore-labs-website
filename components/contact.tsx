@@ -1,10 +1,13 @@
 'use client'
 
+import { motion } from 'framer-motion'
+import Image from 'next/image'
 import { useState } from 'react'
 import QRCode from 'react-qr-code'
 import { Mail, MapPin, Phone, Linkedin, Twitter, Github, Send, ExternalLink } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Reveal } from '@/components/reveal'
+import { useDottedHover } from '@/components/use-dotted-hover'
 import { cn } from '@/lib/utils'
 
 const CONTACT_EMAIL =
@@ -55,10 +58,17 @@ const SOCIALS = [
 export function Contact() {
   const [channel, setChannel] = useState<Channel>('email')
   const config = channelConfig[channel]
+  const { onPointerMove, onPointerLeave, overlayStyle } = useDottedHover()
 
   return (
-    <section id="contact" className="relative overflow-hidden bg-navy py-24 text-white">
+    <section
+      id="contact"
+      className="relative overflow-hidden bg-navy py-24 text-white"
+      onPointerMove={onPointerMove}
+      onPointerLeave={onPointerLeave}
+    >
       <div className="pointer-events-none absolute inset-0 dotted-grid-dark opacity-60 [mask-image:radial-gradient(ellipse_at_center,black,transparent_80%)]" />
+      <motion.div aria-hidden="true" className="pointer-events-none absolute inset-0" style={overlayStyle} />
 
       <div className="relative mx-auto grid max-w-7xl gap-12 px-5 sm:px-8 lg:grid-cols-2 lg:gap-16">
         {/* ── Left column: info ── */}
@@ -144,14 +154,27 @@ export function Contact() {
 
             {/* QR code */}
             <div className="mt-8 flex flex-col items-center gap-5">
-              <div className="rounded-2xl bg-white p-4 shadow-lg">
+              <div className="relative rounded-2xl bg-white p-4 shadow-lg">
                 <QRCode
                   value={config.qrValue}
                   size={180}
                   bgColor="#ffffff"
-                  fgColor="#071224"
-                  level="M"
+                  fgColor="#D4AF37"
+                  level="H"
                 />
+
+                <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+                  <span className="relative inline-flex h-11 w-11 shrink-0 overflow-hidden rounded-lg bg-white/75 backdrop-blur-md ring-1 ring-accent/30 shadow-sm">
+                    <Image
+                      src="/axecorelogotransparent.png"
+                      alt=""
+                      aria-hidden="true"
+                      fill
+                      sizes="44px"
+                      className="scale-[1.75] object-contain"
+                    />
+                  </span>
+                </div>
               </div>
 
               <p className="max-w-xs text-center text-sm text-white/55">{config.description}</p>

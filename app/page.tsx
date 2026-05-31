@@ -9,6 +9,7 @@ import { WhyAxecore } from '@/components/why-axecore'
 import { Capabilities } from '@/components/capabilities'
 import { Insights } from '@/components/insights'
 import { Vision } from '@/components/vision'
+import { Newsletter } from '@/components/newsletter'
 import { Contact } from '@/components/contact'
 import { SiteFooter } from '@/components/site-footer'
 
@@ -27,6 +28,7 @@ export default function HomePage() {
       <Insights />
       <Vision />
       <Contact />
+      <Newsletter />
       <SiteFooter />
     </main>
   )

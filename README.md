@@ -10,14 +10,24 @@ This repository is linked to a [v0](https://v0.app) project. You can continue de
 
 ## Getting Started
 
-First, run the development server:
+Install dependencies:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+pnpm install
+```
+
+Then run the development server:
+
+```bash
 pnpm dev
+```
+
+Environment variables (for contact form storage and email notifications):
+
+```bash
+MONGODB_URI=your_mongodb_connection_string
+MONGODB_DB=axecore
+RESEND_API_KEY=your_resend_api_key
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.

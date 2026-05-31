@@ -1,6 +1,7 @@
 'use client'
 
-import { motion } from 'framer-motion'
+import { motion, useMotionTemplate, useMotionValue, useSpring } from 'framer-motion'
+import { useState } from 'react'
 import { ArrowRight, Sparkles } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
@@ -10,14 +11,43 @@ const FADE = {
 }
 
 export function Hero() {
+  const mouseX = useMotionValue(0)
+  const mouseY = useMotionValue(0)
+  const x = useSpring(mouseX, { stiffness: 140, damping: 24, mass: 0.3 })
+  const y = useSpring(mouseY, { stiffness: 140, damping: 24, mass: 0.3 })
+  const [showTrail, setShowTrail] = useState(false)
+
+  const trailGradient = useMotionTemplate`radial-gradient(95px circle at ${x}px ${y}px, rgba(255,255,255,0.22), rgba(255,255,255,0.12) 42%, rgba(255,255,255,0.04) 62%, transparent 78%)`
+
+  const handlePointerMove = (event: React.PointerEvent<HTMLElement>) => {
+    const rect = event.currentTarget.getBoundingClientRect()
+    mouseX.set(event.clientX - rect.left)
+    mouseY.set(event.clientY - rect.top)
+    if (!showTrail) setShowTrail(true)
+  }
+
   return (
-    <section id="home" className="relative overflow-hidden bg-navy text-white">
+    <section
+      id="home"
+      className="relative overflow-hidden bg-navy text-white"
+      onPointerMove={handlePointerMove}
+      onPointerLeave={() => setShowTrail(false)}
+    >
       {/* subtle dotted grid, faded toward edges */}
       <div
         className="pointer-events-none absolute inset-0 dotted-grid-dark"
         style={{
           maskImage: 'radial-gradient(ellipse 70% 60% at 50% 40%, black, transparent)',
           WebkitMaskImage: 'radial-gradient(ellipse 70% 60% at 50% 40%, black, transparent)',
+        }}
+      />
+
+      <motion.div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 transition-opacity duration-500"
+        style={{
+          backgroundImage: trailGradient,
+          opacity: showTrail ? 1 : 0,
         }}
       />
 

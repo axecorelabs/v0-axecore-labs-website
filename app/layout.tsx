@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import { Plus_Jakarta_Sans, Geist_Mono } from 'next/font/google'
+import Script from 'next/script'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 
@@ -54,6 +55,12 @@ export default function RootLayout({
     <html lang="en" className={`${jakarta.variable} ${geistMono.variable} bg-background`}>
       <body className="font-sans antialiased">
         {children}
+        <Script
+          src="https://zuti.bords.app/widget.js"
+          data-zuti-widget-key="zwk_94fcc4cebbac97245f3e8ea66ebb6c639b7d"
+          data-zuti-bot-name="Axel"
+          strategy="afterInteractive"
+        />
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>

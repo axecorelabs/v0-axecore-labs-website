@@ -1,12 +1,8 @@
 'use server'
 
-import { Redis } from '@upstash/redis'
+import { randomUUID } from 'crypto'
+import { getDb } from '@/lib/mongodb'
 import { Resend } from 'resend'
-
-const redis = new Redis({
-  url: process.env.KV_REST_API_URL,
-  token: process.env.KV_REST_API_TOKEN,
-})
 
 const NOTIFY_EMAIL = 'axecore.org@gmail.com'
 
@@ -44,7 +40,7 @@ export async function submitContact(
     return { ok: false, error: 'Please enter a valid email address.' }
   }
 
-  const id = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
+  const id = randomUUID()
   const projectLabel = PROJECT_LABELS[projectType] ?? projectType ?? 'Not specified'
   const submission = {
     id,
@@ -53,13 +49,12 @@ export async function submitContact(
     company: company || null,
     projectType: projectLabel,
     message,
-    createdAt: new Date().toISOString(),
+    createdAt: new Date(),
   }
 
   try {
-    // Store the full record and keep an ordered index of submission ids.
-    await redis.set(`contact:${id}`, submission)
-    await redis.lpush('contact:submissions', id)
+    const db = await getDb()
+    await db.collection('contact_submissions').insertOne(submission)
   } catch (err) {
     console.log('[v0] Failed to store contact submission:', err)
     return { ok: false, error: 'Something went wrong. Please try again in a moment.' }
@@ -83,7 +78,7 @@ export async function submitContact(
           'Message:',
           message,
           '',
-          `Received: ${submission.createdAt}`,
+          `Received: ${submission.createdAt.toISOString()}`,
         ].join('\n'),
       })
     } catch (err) {
